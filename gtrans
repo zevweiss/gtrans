@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -e
+set -u
+
+gapikey=$(<google_api_key.txt)
+apiurl="https://www.googleapis.com/language/translate/v2"
+
+srclang=""
+targlang=en
+verbose=""
+
+while getopts s:t:v opt; do
+	case $opt in
+	s)
+		srclang="$OPTARG" ;;
+	t)
+		targlang="$OPTARG" ;;
+	v)
+		verbose="-v" ;;
+	*)
+		usage 1>&2
+		exit 1
+	esac
+done
+
+if [ "$srclang" == "$targlang" ]; then
+	echo "Error: source and target languages must be different" 1>&2
+	exit 2
+fi
+
+shift $((OPTIND-1))
+
+if [[ $# == 0 ||  "$@" == "-" ]]; then
+	srctxt=`cat`
+else
+	srctxt="$@"
+fi
+
+apiparms=''
+apiparms+=" -d key=$gapikey"
+apiparms+=" -d prettyprint=true"
+if [ -n "$srclang" ]; then
+	apiparms+=" -d source=$srclang"
+fi
+apiparms+=" -d target=$targlang"
+
+response=`curl $verbose -S -s -G $apiparms --data-urlencode "q=$srctxt" "$apiurl"`
+
+if [ "$verbose" == -v ]; then
+	echo "$response" 1>&2
+fi
+
+extract()
+{
+	local sedcmd="s/^[[:space:]]*\"$1\": \"([^\"]*)\",?$/\1/g; t; d;"
+	sed -r "$sedcmd"
+}
+result=`extract translatedText <<<"$response"`
+
+if [ -z "$srclang" ]; then
+	guessedlang=`extract detectedSourceLanguage <<<"$response"`
+	echo "[detected source language: $guessedlang]" 1>&2
+fi
+
+echo "$result"
