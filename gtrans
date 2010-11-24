@@ -56,7 +56,20 @@ extract()
 	local sedcmd="s/^[[:space:]]*\"$1\": \"([^\"]*)\",?$/\1/g; t; d;"
 	sed -r "$sedcmd"
 }
-result=`extract translatedText <<<"$response"`
+
+esc_chars="'"
+esc_sed=''
+for c in $esc_chars; do
+	dec=`echo -n "$c" | hexdump -e '/1 "%d"'`
+	esc_sed+="s/&#$dec;/$c/g; "
+done
+
+unescape()
+{
+	sed -r "$esc_sed"
+}
+
+result=`extract translatedText <<<"$response" | unescape`
 
 if [ -z "$srclang" ]; then
 	guessedlang=`extract detectedSourceLanguage <<<"$response"`
