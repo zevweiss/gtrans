@@ -1,0 +1,11 @@
+gtrans - a pipe-oriented command-line client for Google's Translate API.
+
+I imagine this has probably been done a million times; I just used it as a way
+to play around with these newfangled interweb APIs everyone seems to be talking
+about these days.
+
+Great for translate-and-translate-back fun:
+  $ ./gtrans -t de I am shocked, shocked to find that gambling is going on in here | ./gtrans 
+  [detected source language: en]
+  [detected source language: de]
+  I'm shocked, shocked that gambling is going to find in the database
