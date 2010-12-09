@@ -10,6 +10,16 @@ srclang=""
 targlang=en
 verbose=""
 
+usage()
+{
+	echo "$0: [-s LANG] [-t LANG] [-v] [TEXT...]"
+	echo "  -s LANG: set LANG as \"from\" language (default: autodetect)"
+	echo "  -t LANG: set LANG as \"to\" language (default: en)"
+	echo "  -v: verbose mode"
+	echo "LANGs are two-letter language codes, e.g. en=English, es=Spanish, de=German, etc."
+	echo "If TEXT is omitted or -, text is read from stdin."
+}
+
 while getopts s:t:v opt; do
 	case $opt in
 	s)
