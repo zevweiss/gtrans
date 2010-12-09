@@ -5,6 +5,9 @@ to play around with these newfangled interweb APIs everyone seems to be talking
 about these days.
 
 Great for translate-and-translate-back fun:
+  $ ./gtrans -t de I am shocked, shocked to find that gambling is going on in here
+  [detected source language: en]
+  Ich bin schockiert, geschockt, dass das Glücksspiel zu finden ist los in der Datenbank
   $ ./gtrans -t de I am shocked, shocked to find that gambling is going on in here | ./gtrans 
   [detected source language: en]
   [detected source language: de]
