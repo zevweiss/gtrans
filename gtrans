@@ -9,18 +9,20 @@ apiurl="https://www.googleapis.com/language/translate/v2"
 srclang=""
 targlang=en
 verbose=""
+quiet=false
 
 usage()
 {
-	echo "$0: [-s LANG] [-t LANG] [-v] [TEXT...]"
+	echo "$0: [-s LANG] [-t LANG] [-v] [-q] [TEXT...]"
 	echo "  -s LANG: set LANG as \"from\" language (default: autodetect)"
 	echo "  -t LANG: set LANG as \"to\" language (default: en)"
 	echo "  -v: verbose mode"
+	echo "  -q: don't print autodetected language to stderr"
 	echo "LANGs are two-letter language codes, e.g. en=English, es=Spanish, de=German, etc."
 	echo "If TEXT is omitted or -, text is read from stdin."
 }
 
-while getopts s:t:v opt; do
+while getopts s:t:vq opt; do
 	case $opt in
 	s)
 		srclang="$OPTARG" ;;
@@ -28,6 +30,8 @@ while getopts s:t:v opt; do
 		targlang="$OPTARG" ;;
 	v)
 		verbose="-v" ;;
+	q)
+		quiet=true ;;
 	*)
 		usage 1>&2
 		exit 1
@@ -81,7 +85,7 @@ unescape()
 
 result=`extract translatedText <<<"$response" | unescape`
 
-if [ -z "$srclang" ]; then
+if [ -z "$srclang" ] && ! $quiet; then
 	guessedlang=`extract detectedSourceLanguage <<<"$response"`
 	echo "[detected source language: $guessedlang]" 1>&2
 fi
