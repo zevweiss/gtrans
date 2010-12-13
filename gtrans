@@ -13,11 +13,12 @@ quiet=false
 
 usage()
 {
-	echo "$0: [-s LANG] [-t LANG] [-v] [-q] [TEXT...]"
+	echo "$0: [-s LANG] [-t LANG] [-v] [-q] [-k KEY] [TEXT...]"
 	echo "  -s LANG: set LANG as \"from\" language (default: autodetect)"
 	echo "  -t LANG: set LANG as \"to\" language (default: en)"
 	echo "  -v: verbose mode"
 	echo "  -q: don't print autodetected language to stderr"
+	echo "  -k KEY: read Google API key from file KEY"
 	echo "LANGs are two-letter language codes, e.g. en=English, es=Spanish, de=German, etc."
 	echo "If TEXT is omitted or -, text is read from stdin."
 }
