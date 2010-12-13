@@ -56,7 +56,18 @@ if [ -n "$srclang" ]; then
 fi
 apiparms+=" -d target=$targlang"
 
-response=`curl $verbose -S -s -G $apiparms --data-urlencode "q=$srctxt" "$apiurl"`
+# jumping through some hoops for 'set -e'
+ret=0
+response=`curl $verbose -f -S -s -G $apiparms --data-urlencode "q=$srctxt" "$apiurl"` || ret=$?
+if [ $ret != 0 ]; then
+	if [ $ret == 22 ]; then
+		echo "HTTP request failed (bad API key?)" 1>&2
+		exit 3
+	else
+		echo "Unknown curl failure: $ret" 1>&2
+		exit 4
+	fi
+fi
 
 if [ "$verbose" == -v ]; then
 	echo "$response" 1>&2
