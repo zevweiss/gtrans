@@ -3,7 +3,7 @@
 set -e
 set -u
 
-gapikey=$(<google_api_key.txt)
+keyfile="google_api_key.txt"
 apiurl="https://www.googleapis.com/language/translate/v2"
 
 srclang=""
@@ -22,19 +22,14 @@ usage()
 	echo "If TEXT is omitted or -, text is read from stdin."
 }
 
-while getopts s:t:vq opt; do
+while getopts s:t:vqk: opt; do
 	case $opt in
-	s)
-		srclang="$OPTARG" ;;
-	t)
-		targlang="$OPTARG" ;;
-	v)
-		verbose="-v" ;;
-	q)
-		quiet=true ;;
-	*)
-		usage 1>&2
-		exit 1
+	s) srclang="$OPTARG" ;;
+	t) targlang="$OPTARG" ;;
+	v) verbose="-v" ;;
+	q) quiet=true ;;
+	k) keyfile="$OPTARG" ;;
+	*) usage 1>&2; exit 1 ;;
 	esac
 done
 
@@ -42,6 +37,8 @@ if [ "$srclang" == "$targlang" ]; then
 	echo "Error: source and target languages must be different" 1>&2
 	exit 2
 fi
+
+gapikey=$(<"$keyfile")
 
 shift $((OPTIND-1))
 
