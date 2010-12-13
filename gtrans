@@ -75,16 +75,14 @@ fi
 
 extract()
 {
-	local sedcmd="s/^[[:space:]]*\"$1\": \"([^\"]*)\",?$/\1/g; t; d;"
-	sed -r "$sedcmd"
+	sed -r "s/^[[:space:]]*\"$1\": \"([^\"]*)\",?$/\1/g; t; d;"
 }
 
-esc_chars="'"
-esc_sed=''
-for c in $esc_chars; do
-	dec=`echo -n "$c" | hexdump -e '/1 "%d"'`
-	esc_sed+="s/&#$dec;/$c/g; "
-done
+esc_sed="s/&#39;/'/g;"
+esc_sed+=" s/&quot;/\"/g;"
+esc_sed+=" s/&lt;/</g;"
+esc_sed+=" s/&gt;/>/g;"
+esc_sed+=" s/&amp;/\&/g;"
 
 unescape()
 {
